@@ -8,7 +8,7 @@ Prototipo de un agente inteligente adaptativo basado en Q-learning para la selec
 
 ## Descripción
 
-**AgenteEducativoAdaptativo-RL** es un prototipo desarrollado como parte de una investigación doctoral orientada al diseño de un agente inteligente adaptativo que apoya a docentes universitarios en la selección de recursos audiovisuales educativos disponibles en YouTube.
+**AgenteEducativoAdaptativo-RL** es un prototipo desarrollado como parte de una investigación doctoral orientada al diseño de un agente inteligente adaptativo que apoya a docentes universitarios en la selección de videos educativos disponibles en YouTube.
 
 El sistema utiliza la **YouTube Data API v3** para recuperar videos relacionados con una consulta temática y aplica un mecanismo de aprendizaje por refuerzo basado en **Q-Learning** para adaptar progresivamente la priorización de las recomendaciones a partir de la retroalimentación proporcionada por cada docente.
 
@@ -18,7 +18,7 @@ A diferencia de los sistemas tradicionales de recomendación centrados únicamen
 
 # Objetivo
 
-Desarrollar un agente inteligente adaptativo que apoye la selección asistida de recursos audiovisuales educativos en YouTube mediante la integración de:
+El objetivo de este prototipo es desarrollar un agente inteligente adaptativo que apoye la selección asistida de recursos audiovisuales educativos en YouTube mediante la integración de:
 
 - Aprendizaje por refuerzo (Q-Learning).
 - Perfil docente.
@@ -29,15 +29,12 @@ Desarrollar un agente inteligente adaptativo que apoye la selección asistida de
 
 # Características principales
 
-- Recuperación de videos mediante YouTube Data API v3.
-- Configuración personalizada del perfil docente.
-- Construcción dinámica del estado del agente.
-- Aprendizaje mediante Q-Learning.
-- Evaluación pedagógica de recursos audiovisuales.
-- Actualización automática de la Q-table.
-- Reconstrucción del perfil adaptativo.
-- Persistencia local del aprendizaje.
-- Priorización adaptativa de recomendaciones.
+- Recuperación inicial de recursos educativos
+- Filtrado inicial basado en contenido
+- Construcción del estado
+- Cálculo de recompensas
+- Aprendizaje mediante Q-Learning
+- Actualización del perfil adaptativo
 
 ---
 
@@ -85,7 +82,7 @@ El prototipo se organiza en tres capas funcionales:
 Clone el repositorio:
 
 ```bash
-git clone https://github.com/TU_USUARIO/AgenteEducativoAdaptativo-RL.git
+git clone https://github.com/karinagalvancervantes-pixel/AgenteEducativoAdaptativo-RL.git
 ```
 
 Acceda al directorio del proyecto:
@@ -111,6 +108,8 @@ Por motivos de seguridad, el repositorio **no distribuye claves API**.
 Cada usuario deberá generar y registrar su propia clave.
 
 Una vez validada la API, el sistema solicitará la configuración inicial del perfil docente.
+
+Durante la primera ejecución también se crearán automáticamente las carpetas config y data, donde el sistema almacenará localmente la configuración y el conocimiento adquirido por el agente.
 
 ---
 
@@ -152,7 +151,7 @@ Durante el uso del sistema se crean automáticamente archivos de persistencia, e
 - `historial_evaluaciones.json`
 - `q_table.json`
 
-Estos archivos **no forman parte del repositorio**, ya que representan el conocimiento generado durante la interacción de cada usuario con el agente.
+Estos archivos **no forman parte del repositorio**, ya que representan el conocimiento adquirido por el agente durante la interacción con cada docente.
 
 ---
 
@@ -175,6 +174,16 @@ Actualmente el sistema se encuentra en fase de verificación funcional prelimina
 
 ---
 
+# Investigación asociada
+
+Este repositorio acompaña la investigación doctoral titulada:
+
+"Agente inteligente adaptativo basado en aprendizaje por refuerzo para la personalización de videos educativos de YouTube dirigidos a docentes universitarios."
+
+La investigación fue desarrollada utilizando la metodología Design Science Research (DSR).
+
+---
+
 # Licencia
 
 Este proyecto se distribuye bajo la licencia **MIT License**.
@@ -186,16 +195,6 @@ Este proyecto se distribuye bajo la licencia **MIT License**.
 **MTIC. Karina Galván Cervantes**
 
 Doctorado en Tecnologías de la Información
-
-Instituto Mexicano de Formación Ejecutiva (IMFE)
-
-Director de tesis:
-
-**Dr. Rubén Meraz Cabrales**
-
-Co-directora:
-
-**Dra. Ocotlán Díaz Parra**
 
 ---
 
