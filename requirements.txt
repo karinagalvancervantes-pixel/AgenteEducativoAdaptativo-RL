@@ -1,0 +1,6 @@
+# ==========================================
+# AgenteEducativoAdaptativo-RL
+# Dependencias externas
+# ==========================================
+
+requests>=2.32.0
