@@ -144,14 +144,7 @@ El agente **no incorpora conocimiento previo**.
 
 Cada docente genera su propio proceso de aprendizaje.
 
-Durante el uso del sistema se crean automáticamente archivos de persistencia, entre ellos:
-
-- `config_api.json`
-- `perfil_docente.json`
-- `historial_evaluaciones.json`
-- `q_table.json`
-
-Estos archivos **no forman parte del repositorio**, ya que representan el conocimiento adquirido por el agente durante la interacción con cada docente.
+Durante la primera ejecución, el sistema crea automáticamente las carpetas config y data en el directorio de trabajo del usuario. En ellas se almacenan la configuración de la API, el perfil docente, el historial de evaluaciones y la Q-table generada por el aprendizaje adaptativo. Estas carpetas y sus archivos no forman parte del repositorio, ya que representan información generada localmente durante la interacción con el agente.
 
 ---
 
