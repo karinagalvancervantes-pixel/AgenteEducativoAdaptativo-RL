@@ -2,23 +2,19 @@
 Módulo: agente_rl.py
 
 Descripción:
-Implementa el algoritmo de aprendizaje por refuerzo basado en Q-Learning.
-El agente construye estados a partir de las características del recurso
-educativo y del perfil del docente, selecciona acciones mediante una
-política ε-greedy y actualiza la Q-table utilizando las recompensas
-obtenidas durante la interacción.
+Implementa el mecanismo de aprendizaje adaptativo del agente,
+basado en aprendizaje por refuerzo mediante una regla de
+actualización incremental para pares estado-acción.
 
 Responsabilidades:
 - Construir la representación del estado.
 - Gestionar la persistencia de la Q-table.
-- Seleccionar acciones mediante política ε-greedy.
 - Actualizar la Q-table.
 - Consultar valores Q.
 - Reconstruir la Q-table desde el historial.
 
 Dependencias:
 - json
-- random
 - modulos.rutas
 
 Contexto del artefacto:
@@ -31,7 +27,6 @@ Karina Galván Cervantes
 """
 
 import json
-import random
 from modulos.rutas import Q_TABLE_FILE
 
 ACCIONES = (
@@ -142,50 +137,15 @@ def guardar_q_table(q_table):
         )
 
 
-def seleccionar_accion(
-    estado,
-    epsilon=0.1
-):
-    """
-    Selecciona una acción utilizando una política ε-greedy.
-
-    Con probabilidad ε el agente explora una acción aleatoria.
-    En caso contrario selecciona la acción con mayor valor Q.
-    """
-
-    q_table = cargar_q_table()
-
-    estado = str(estado)
-
-    # Explora cuando el estado aún no ha sido aprendido.
-
-    if estado not in q_table:
-        return random.choice(ACCIONES)
-
-    # Explora aleatoriamente con probabilidad ε.
-
-    if random.random() < epsilon:
-        return random.choice(ACCIONES)
-
-    # Explota el conocimiento previamente aprendido.
-
-    valores = q_table[estado]
-
-    return max(
-        valores,
-        key=valores.get
-    )
-
-
 def actualizar_q_table(
     estado,
     accion,
     recompensa,
-    alpha=0.1,
-    gamma=0.9
+    alpha=0.1
 ):
     """
-    Actualiza la Q-table utilizando la ecuación de Q-Learning.
+    Actualiza la Q-table mediante una regla de aprendizaje
+    incremental de un solo paso para el par estado-acción.
     """
 
     q_table = cargar_q_table()
@@ -203,16 +163,13 @@ def actualizar_q_table(
 
     valor_actual = q_table[estado][accion]
 
-    # En este prototipo se utiliza un modelo simplificado donde
-    # el estado futuro corresponde al mismo contexto de decisión.
-
-    max_futuro = max(
-        q_table[estado].values()
-    )
-
+    # Regla de aprendizaje de un solo paso.
+    # Cada evaluación docente actualiza directamente el valor
+    # asociado al par estado-acción, sin utilizar bootstrap
+    # sobre un estado sucesor.
+    
     nuevo_valor = valor_actual + alpha * (
         recompensa
-        + gamma * max_futuro
         - valor_actual
     )
 
@@ -262,7 +219,6 @@ def obtener_valor_q(
 def reconstruir_q_table(
     historial,
     alpha=0.1,
-    gamma=0.9
 ):
     """
     Reconstruye completamente la Q-table a partir del historial
@@ -271,6 +227,11 @@ def reconstruir_q_table(
     Esta función se utiliza cuando se eliminan registros del
     historial y es necesario recalcular el conocimiento aprendido
     por el agente.
+
+    La reconstrucción aplica la misma regla de aprendizaje
+    incremental utilizada por actualizar_q_table(), garantizando
+    que los valores reconstruidos sean consistentes con el
+    aprendizaje acumulado del agente.
     """
 
     q_table = {}
@@ -297,13 +258,8 @@ def reconstruir_q_table(
 
         valor_actual = q_table[estado][accion]
 
-        max_futuro = max(
-            q_table[estado].values()
-        )
-
         nuevo_valor = valor_actual + alpha * (
             recompensa
-            + gamma * max_futuro
             - valor_actual
         )
 
