@@ -141,7 +141,7 @@ def buscar_videos(api_key, perfil, consulta):
         "part": "snippet",
         "q": consulta_youtube,
         "type": "video",
-        "maxResults": 25,
+        "maxResults": 50,
         "key": api_key
     }
 
@@ -193,16 +193,6 @@ def buscar_videos(api_key, perfil, consulta):
 
             snippet = item["snippet"]
 
-            codigo_idioma = (
-                snippet.get("defaultAudioLanguage")
-                or snippet.get("defaultLanguage")
-                or ""
-            )
-
-            idioma_final = normalizar_idioma(
-                codigo_idioma
-            )
-
             # Cuando el idioma preferido es "ambos", no se aplica filtrado.
 
             video_ids.append(video_id)
@@ -229,9 +219,7 @@ def buscar_videos(api_key, perfil, consulta):
                 "fecha_publicacion": snippet.get(
                     "publishedAt",
                     ""
-                ),
-
-                "idioma": idioma_final
+                )
             })
             
         # Algunos recursos recuperados por la API pueden presentar
@@ -330,6 +318,16 @@ def buscar_videos(api_key, perfil, consulta):
                 ""
             )
 
+            codigo_idioma = (
+                snippet.get("defaultAudioLanguage")
+                or snippet.get("defaultLanguage")
+                or ""
+            )
+
+            idioma = normalizar_idioma(
+                codigo_idioma
+            )
+
             detalles_dict[video_id] = {
 
                 "duracion_seg": duracion_seg,
@@ -340,7 +338,9 @@ def buscar_videos(api_key, perfil, consulta):
 
                 "subtitulos": subtitulos,
 
-                "categoria": categoria
+                "categoria": categoria,
+                
+                "idioma": idioma
             }
 
         # Algunos recursos recuperados por la API pueden presentar
@@ -453,7 +453,10 @@ def buscar_videos(api_key, perfil, consulta):
                 "url":
                 f"https://www.youtube.com/watch?v={video_id}",
 
-                "idioma": video["idioma"],
+                "idioma": detalles.get(
+                    "idioma",
+                    "otro"
+                ),
 
                 "fecha_publicacion":
                 video["fecha_publicacion"],
@@ -496,5 +499,16 @@ def buscar_videos(api_key, perfil, consulta):
             # Continúa procesando los demás elementos para evitar que un
             # recurso con información incompleta interrumpa la recuperación.
             continue
-    
+
+
+    for posicion, video in enumerate(resultados_finales, start=1):
+        print(
+            f"{posicion:02d}. "
+            f"ID: {video.get('video_id', '')} | "
+            f"Título: {video.get('titulo', '')} | "
+            f"Canal: {video.get('canal', '')} | "
+            f"Duración: {video.get('duracion_cat', '')}"
+            f"Idioma: {video.get('idioma', '')}"
+        )
+
     return resultados_finales
