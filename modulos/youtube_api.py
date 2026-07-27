@@ -9,7 +9,7 @@ información adicional de cada video y genera una estructura de datos lista para
 ser utilizada por el proceso de recomendación.
 
 Responsabilidades:
-- Construir consultas a la API de YouTube Data v3.
+- Construir consultas a la API de You Tube Data v3.
 - Recuperar videos de acuerdo con la consulta realizada.
 - Obtener información adicional de cada video mediante una segunda consulta.
 - Normalizar información relevante para el agente.
