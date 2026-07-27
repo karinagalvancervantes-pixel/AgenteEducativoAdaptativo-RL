@@ -3,7 +3,7 @@ Módulo: youtube_api.py
 
 Descripción:
 Gestiona la comunicación entre el agente inteligente adaptativo y la API de
-YouTube Data v3 para recuperar información de videos educativos. Este módulo
+You Tube Data v3 para recuperar información de videos educativos. Este módulo
 construye las consultas, obtiene los resultados desde la API, recupera
 información adicional de cada video y genera una estructura de datos lista para
 ser utilizada por el proceso de recomendación.
@@ -27,7 +27,7 @@ Dependencias:
 Contexto del artefacto:
 Artefacto desarrollado como parte de la tesis doctoral "Agente inteligente
 adaptativo basado en aprendizaje por refuerzo para la personalización de videos
-educativos de YouTube dirigidos a docentes universitarios".
+educativos de You Tube dirigidos a docentes universitarios".
 
 Autora:
 Karina Galván Cervantes
@@ -63,12 +63,12 @@ def normalizar_idioma(codigo_idioma):
 
 def buscar_videos(api_key, perfil, consulta):
     """
-    Recupera videos educativos desde la API de YouTube Data v3 a partir de
+    Recupera videos educativos desde la API de You Tube Data v3 a partir de
     la consulta realizada por el docente y de la información disponible en
     su perfil.
 
     Parámetros:
-        api_key (str): API Key de YouTube Data v3.
+        api_key (str): API Key de You Tube Data v3.
         perfil (dict): Perfil docente utilizado para contextualizar la búsqueda.
         consulta (str): Consulta ingresada por el docente.
 
