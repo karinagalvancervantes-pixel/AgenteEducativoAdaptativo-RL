@@ -4,18 +4,19 @@ Módulo: resultados_ui.py
 Descripción:
 Implementa la interfaz gráfica encargada de presentar los recursos
 educativos recuperados por el agente inteligente adaptativo. Este módulo
-permite visualizar las recomendaciones generadas, registrar la evaluación
+permite visualizar las valoraciones de los videos educativos, registrar la evaluación
 pedagógica realizada por el docente, actualizar el aprendizaje mediante
 Q-Learning y reflejar dinámicamente los cambios producidos en el proceso
 de adaptación del agente.
 
 Responsabilidades:
 - Mostrar los resultados recuperados desde YouTube.
-- Calcular y visualizar el nivel de recomendación adaptativa.
+- Calcular y visualizar el nivel de aprendizaje adaptativo representado mediante estrellas.
 - Gestionar la evaluación pedagógica de los recursos educativos.
 - Actualizar la Q-table mediante aprendizaje por refuerzo.
 - Reconstruir el perfil adaptativo del docente.
-- Actualizar dinámicamente el ranking de recomendaciones.
+- Actualizar dinámicamente la priorización adaptativa de recursos de el proceso de priorización adaptativa
+de los recursos educativos.
 - Administrar la interacción entre la interfaz gráfica y los módulos del agente.
 
 Contexto del artefacto:
@@ -80,10 +81,10 @@ def contar_evidencia_estado(historial, estado):
 
 def calcular_recomendacion_visual(video, perfil, historial):
     """
-    Calcula la representación visual del nivel de recomendación
+    Calcula la representación visual del nivel de valoración pedagógica
     adaptativa para un recurso educativo.
 
-    La recomendación se obtiene a partir del conocimiento
+    La valoración adaptativa se obtiene a partir del conocimiento
     aprendido por el agente mediante Q-Learning y se complementa
     con un ligero ajuste semántico cuando aún no existe
     conocimiento previo suficiente.
@@ -157,7 +158,7 @@ def calcular_recomendacion_visual(video, perfil, historial):
 
     )
 
-    # Determina el nivel visual de recomendación adaptativa.
+    # Determina el nivel visual de aprendizaje adaptativo.
     #
     # La representación mediante estrellas depende de dos
     # condiciones:
@@ -205,7 +206,7 @@ def calcular_recomendacion_visual(video, perfil, historial):
             estrellas_n = 5
 
     # Cuando aún no existe conocimiento previo suficiente,
-    # el ranking incorpora un pequeño ajuste semántico.
+    # la priorización adaptativa de recursos incorpora un pequeño ajuste semántico.
 
     if q_util == 0 and q_no_util == 0:
 
@@ -224,7 +225,7 @@ def preparar_resultados(
     historial
 ):
     """
-    Calcula la recomendación adaptativa de cada recurso,
+    Calcula la valoración adaptativa de cada recurso,
     ordena los resultados y los separa entre pendientes
     y previamente evaluados.
     """
@@ -298,35 +299,35 @@ def actualizar_tabla_resultados(
 
 def mostrar_ayuda_recomendacion():
     texto = (
-        "Nivel de recomendación adaptativa\n\n"
+        "Nivel de valoración pedagógica adaptativa\n\n"
 
-        "Las estrellas representan el nivel de recomendación adaptativa generado por el" 
+        "Las estrellas representan el nivel de aprendizaje adaptativa generado por el" 
         "agente inteligente a partir del conocimiento adquirido durante su proceso de aprendizaje.\n"
 
-        "La asignación del nivel de recomendación considera dos condiciones:\n\n"
+        "La asignación del número de estrellas, considera dos condiciones:\n\n"
 
         "1. Evidencia acumulada para el estado\n"
         "  (mínimo tres evaluaciones).\n\n"
 
         "2. Nivel de aprendizaje obtenido mediante Q-Learning\n\n"
 
-        "Interpretación del nivel de recomendación:\n\n"
+        "Interpretación del nivel de conocimiento adaptativo:\n\n"
 
         "★   Evidencia insuficiente o aprendizaje desfavorable.\n"
 
-        "★★  Aprendizaje inicial.\n"
+        "★★  Conocimiento Adaptativo inicial.\n"
 
-        "★★★ Aprendizaje favorable.\n"
+        "★★★ Conocimiento Adaptativo favorable.\n"
 
-        "★★★★ Aprendizaje consolidado.\n"
+        "★★★★ Conocimiento Adaptativo consolidado.\n"
 
-        "★★★★★ Aprendizaje altamente consolidado.\n\n"
+        "★★★★★ Conocimiento Adaptativo altamente consolidado.\n\n"
         "Las estrellas constituyen un apoyo para la toma de decisiones"
         " del docente y no sustituyen su criterio durante la selección de recursos educativos. "       
     )
 
     messagebox.showinfo(
-        "Nivel de recomendación adaptativa",
+        "Nivel de aprendizaje adaptativo",
         texto
     )
 
@@ -346,7 +347,7 @@ def mostrar_resultados(resultados, perfil, consulta_actual):
     ventana = tk.Toplevel()
     ventana.title("Evaluación de resultados")
     ventana.update_idletasks()
-    ventana.geometry("1100x600")
+    ventana.geometry("1100x580")
     ventana.minsize(1100,550)
     ventana.resizable(True,True)
     
@@ -377,7 +378,7 @@ def mostrar_resultados(resultados, perfil, consulta_actual):
 
     lbl_info = tk.Label(
         frame_titulo,
-        text="ⓘ ¿Cómo interpretar la recomendación?",
+        text="ⓘ ¿Cómo interpretar las estrellas?",
         fg="blue",
         cursor="hand2",
         font=("Arial", 9, "underline")
@@ -438,6 +439,46 @@ def mostrar_resultados(resultados, perfil, consulta_actual):
 
     scroll_evaluados.config(command=tree_evaluados.yview)
 
+    # Mantiene una única selección entre ambas tablas de resultados.
+
+    def seleccionar_en_pendientes(event):
+        """
+        Elimina la selección de la tabla de recursos evaluados cuando
+        se selecciona un recurso pendiente.
+        """
+
+        seleccion_evaluados = tree_evaluados.selection()
+
+        if seleccion_evaluados:
+            tree_evaluados.selection_remove(
+                *seleccion_evaluados
+            )
+
+
+    def seleccionar_en_evaluados(event):
+        """
+        Elimina la selección de la tabla de recursos pendientes cuando
+        se selecciona un recurso evaluado.
+        """
+
+        seleccion_pendientes = tree_pendientes.selection()
+
+        if seleccion_pendientes:
+            tree_pendientes.selection_remove(
+                *seleccion_pendientes
+            )
+
+
+    tree_pendientes.bind(
+        "<<TreeviewSelect>>",
+        seleccionar_en_pendientes
+    )
+
+    tree_evaluados.bind(
+        "<<TreeviewSelect>>",
+        seleccionar_en_evaluados
+    )
+
     # Configura los encabezados y dimensiones de ambas tablas.
 
     encabezados = {
@@ -446,7 +487,7 @@ def mostrar_resultados(resultados, perfil, consulta_actual):
         "canal": "Canal",
         "duracion": "Duración",
         "interaccion": "Interacción",
-        "relevancia": "Recomendación"
+        "relevancia": "Nivel de Aprendiza Adaptativo"
     }
 
     anchos = {
@@ -1002,7 +1043,7 @@ def mostrar_resultados(resultados, perfil, consulta_actual):
             evaluacion["accion"] = accion
             evaluacion["recompensa"] = recompensa
 
-            # Actualiza la Q-table del agente.
+            # Actualiza la Q-table mediante el algoritmo Q-Learning.
 
             actualizar_q_table(
                 estado,
@@ -1021,11 +1062,10 @@ def mostrar_resultados(resultados, perfil, consulta_actual):
         evaluaciones_temp.clear()
 
         recalcular_y_mostrar_resultados()
-
-        messagebox.showinfo(
+        
+       messagebox.showinfo(
             "Evaluación",
             "Evaluación registrada correctamente.\n"
-            "Las recomendaciones han sido actualizadas."
         )
     
 
@@ -1168,7 +1208,7 @@ def mostrar_resultados(resultados, perfil, consulta_actual):
 
     tk.Button(
         contenedor_botones,
-        text="↩ Deshacer previo aprendizaje",
+        text="↩ Deshacer, antes del aprendizaje",
         command=deshacer_evaluacion
     ).pack(side="left", padx=5)
 
