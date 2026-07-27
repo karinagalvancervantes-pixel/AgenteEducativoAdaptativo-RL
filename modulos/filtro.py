@@ -33,7 +33,7 @@ Autora:
 Karina Galván Cervantes
 """
 
-MAX_RESULTADOS = 20
+MAX_RESULTADOS = 30
 
 
 def filtrar_videos(resultados, perfil, preferencias):
@@ -80,9 +80,25 @@ def filtrar_videos(resultados, perfil, preferencias):
         if len(palabra) > 2
     ]
 
+    # Excluye los recursos identificados explícitamente por YouTube
+    # como contenidos en portugués. Los recursos cuyo idioma no fue
+    # informado se conservan para evitar descartar videos pertinentes.
+    resultados_filtrados = []
+    for video in resultados:
+
+        codigo_idioma = video.get(
+            "codigo_idioma",
+            ""
+        ).lower()
+
+        if codigo_idioma.startswith("pt"):
+            continue
+
+        resultados_filtrados.append(video)
+
     # Evalúa cada recurso educativo recuperado para asignar una
     # puntuación inicial de prioridad.
-    for video in resultados:
+    for video in resultados_filtrados:
 
         score = 0
         # Evalúa la coincidencia entre la consulta realizada por el
@@ -180,7 +196,7 @@ def filtrar_videos(resultados, perfil, preferencias):
         video["score_filtro"] = score
 
     # Ordena los recursos de acuerdo con la puntuación obtenida.
-    resultados.sort(
+    resultados_filtrados.sort(
         key=lambda video: video.get(
             "score_filtro",
             0
@@ -189,4 +205,4 @@ def filtrar_videos(resultados, perfil, preferencias):
     )
 
     # Limita el número de recursos entregados a los módulos posteriores.
-    return resultados[:MAX_RESULTADOS]
+    return resultados_filtrados[:MAX_RESULTADOS]
