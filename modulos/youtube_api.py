@@ -340,7 +340,10 @@ def buscar_videos(api_key, perfil, consulta):
 
                 "categoria": categoria,
                 
-                "idioma": idioma
+                "idioma": idioma,
+                # Conserva el código original proporcionado por YouTube
+                # para distinguir idiomas identificados explícitamente.
+                "codigo_idioma": codigo_idioma.lower()
             }
 
         # Algunos recursos recuperados por la API pueden presentar
@@ -458,6 +461,11 @@ def buscar_videos(api_key, perfil, consulta):
                     "otro"
                 ),
 
+                "codigo_idioma": detalles.get(
+                    "codigo_idioma",
+                    ""
+                ),
+
                 "fecha_publicacion":
                 video["fecha_publicacion"],
 
@@ -500,6 +508,9 @@ def buscar_videos(api_key, perfil, consulta):
             # recurso con información incompleta interrumpa la recuperación.
             continue
 
+    print("\n" + "=" * 80)
+    print("LISTA BASE RECUPERADA DESDE YOUTUBE API")
+    print("=" * 80)
 
     for posicion, video in enumerate(resultados_finales, start=1):
         print(
@@ -510,5 +521,9 @@ def buscar_videos(api_key, perfil, consulta):
             f"Duración: {video.get('duracion_cat', '')}"
             f"Idioma: {video.get('idioma', '')}"
         )
+
+    print("=" * 80)
+    print(f"TOTAL RECUPERADO: {len(resultados_finales)}")
+    print("=" * 80 + "\n")
 
     return resultados_finales
