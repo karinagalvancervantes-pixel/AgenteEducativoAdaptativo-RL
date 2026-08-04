@@ -2,11 +2,10 @@
 Módulo: recompensa.py
 
 Descripción:
-Calcula la recompensa asociada a cada evaluación realizada por el docente.
-La función integra criterios de preferencia del usuario, características
-del recurso educativo y la valoración pedagógica registrada durante la
-interacción para generar la recompensa que posteriormente será utilizada
-por el algoritmo de aprendizaje por refuerzo.
+Calcula la recompensa utilizada por el agente durante el proceso de aprendizaje.
+Integra la valoración realizada por el docente, criterios pedagógicos,
+preferencias adaptativas y características contextuales del recurso educativo
+para generar la señal de recompensa empleada en la actualización de la Q-table.
 
 Responsabilidades:
 - Calcular la recompensa base a partir de la decisión del docente.
@@ -88,7 +87,7 @@ def calcular_recompensa(evaluaciones, perfil):
 
         ajuste = 0
 
-        # Favorece recursos cuya duración coincide con la preferencia del docente.
+        # Favorece recursos provenientes de canales clasificados como educativos.
 
         if (
             duracion_pref != "indefinido"
@@ -105,7 +104,7 @@ def calcular_recompensa(evaluaciones, perfil):
 
             ajuste += min(
                 frecuencia * 0.05,
-                0.30
+                0.15
             )
 
         # Favorece recursos provenientes de canales educativos.
@@ -113,14 +112,14 @@ def calcular_recompensa(evaluaciones, perfil):
         if tipo_canal == "educativo":
             ajuste += 0.2
 
-        # Considera el nivel de interacción del video como indicador
-        # complementario de aceptación por parte de los usuarios.
+        # Considera el nivel de interacción del video como un indicador
+        # contextual complementario.
 
         if interaccion == "alta":
-            ajuste += 0.2
+            ajuste += 0.05
 
         elif interaccion == "media":
-            ajuste += 0.1
+            ajuste += 0.025
 
         # Incorpora la evaluación pedagógica únicamente cuando
         # el recurso fue considerado útil.
